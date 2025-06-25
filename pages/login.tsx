@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 const Login = ({ login }: { login: (user: any) => void }) => {
   const [email, setEmail] = useState('');
@@ -26,15 +27,156 @@ const Login = ({ login }: { login: (user: any) => void }) => {
   };
 
   return (
-    <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>
-      <div style={{ background: 'rgba(255,255,255,0.95)', borderRadius: 24, boxShadow: '0 8px 32px rgba(0,0,0,0.12)', padding: '2.5rem 2rem', maxWidth: 400, width: '100%' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: 24, fontWeight: 700, fontSize: 28, color: '#f76b1c', letterSpacing: 1 }}>Giriş Yap</h2>
+    <div style={{ 
+      minHeight: '80vh', 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center', 
+      background: '#fafafa',
+      padding: '2rem'
+    }}>
+      <div style={{ 
+        background: '#fff', 
+        borderRadius: '12px', 
+        boxShadow: '0 4px 20px rgba(0,0,0,0.1)', 
+        padding: '2.5rem', 
+        maxWidth: 400, 
+        width: '100%',
+        position: 'relative'
+      }}>
+        {/* Çarpı Butonu */}
+        <Link href="/" style={{
+          position: 'absolute',
+          top: '1rem',
+          right: '1rem',
+          width: '30px',
+          height: '30px',
+          borderRadius: '50%',
+          background: '#e74c3c',
+          color: '#fff',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textDecoration: 'none',
+          fontSize: '18px',
+          fontWeight: 'bold',
+          cursor: 'pointer',
+          border: 'none'
+        }}>
+          ×
+        </Link>
+
+        <h2 style={{ 
+          textAlign: 'center', 
+          marginBottom: '2rem', 
+          fontWeight: 700, 
+          fontSize: '2rem', 
+          color: '#2c3e50'
+        }}>
+          Giriş Yap
+        </h2>
+        
         <form onSubmit={handleSubmit}>
-          <input type="email" placeholder="E-posta adresinizi girin" value={email} onChange={e => setEmail(e.target.value)} required style={{ width: '100%', marginBottom: 16, padding: '12px', borderRadius: 8, border: '1px solid #eee', fontSize: 16, '::placeholder': { color: '#888', opacity: 1 } }} />
-          <input type="password" placeholder="Şifrenizi girin" value={password} onChange={e => setPassword(e.target.value)} required style={{ width: '100%', marginBottom: 16, padding: '12px', borderRadius: 8, border: '1px solid #eee', fontSize: 16, '::placeholder': { color: '#888', opacity: 1 } }} />
-          <button type="submit" style={{ width: '100%', padding: '12px', borderRadius: 8, background: 'linear-gradient(90deg, #fcb69f 0%, #a1c4fd 100%)', color: '#fff', fontWeight: 700, fontSize: 18, border: 'none', cursor: 'pointer', boxShadow: '0 2px 8px rgba(252,182,159,0.2)' }}>Giriş Yap</button>
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label style={{ 
+              display: 'block', 
+              marginBottom: '0.5rem', 
+              fontWeight: 600, 
+              color: '#333'
+            }}>
+              E-posta
+            </label>
+            <input 
+              type="email" 
+              placeholder="E-posta adresinizi girin" 
+              value={email} 
+              onChange={e => setEmail(e.target.value)} 
+              required 
+              style={{ 
+                width: '100%', 
+                padding: '12px', 
+                borderRadius: '6px', 
+                border: '2px solid #ddd', 
+                fontSize: '16px',
+                color: '#333',
+                backgroundColor: '#fff'
+              }} 
+            />
+          </div>
+          
+          <div style={{ marginBottom: '2rem' }}>
+            <label style={{ 
+              display: 'block', 
+              marginBottom: '0.5rem', 
+              fontWeight: 600, 
+              color: '#333'
+            }}>
+              Şifre
+            </label>
+            <input 
+              type="password" 
+              placeholder="Şifrenizi girin" 
+              value={password} 
+              onChange={e => setPassword(e.target.value)} 
+              required 
+              style={{ 
+                width: '100%', 
+                padding: '12px', 
+                borderRadius: '6px', 
+                border: '2px solid #ddd', 
+                fontSize: '16px',
+                color: '#333',
+                backgroundColor: '#fff'
+              }} 
+            />
+          </div>
+          
+          <button 
+            type="submit" 
+            style={{ 
+              width: '100%', 
+              padding: '12px', 
+              borderRadius: '6px', 
+              background: '#3498db', 
+              color: '#fff', 
+              fontWeight: 600, 
+              fontSize: '16px', 
+              border: 'none', 
+              cursor: 'pointer'
+            }}
+          >
+            Giriş Yap
+          </button>
         </form>
-        {error && <div style={{ color: '#e74c3c', marginTop: 16, textAlign: 'center', fontWeight: 600 }}>{error}</div>}
+        
+        {error && (
+          <div style={{ 
+            color: '#e74c3c', 
+            marginTop: '1rem', 
+            textAlign: 'center', 
+            fontWeight: 600,
+            padding: '0.5rem',
+            backgroundColor: '#ffe6e6',
+            borderRadius: '4px'
+          }}>
+            {error}
+          </div>
+        )}
+        
+        <div style={{ 
+          textAlign: 'center', 
+          marginTop: '2rem',
+          color: '#666'
+        }}>
+          Hesabınız yok mu?{' '}
+          <Link href="/register" style={{ 
+            color: '#3498db', 
+            textDecoration: 'none',
+            fontWeight: 600
+          }}>
+            Kayıt Ol
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -20,32 +20,47 @@ const Header = () => {
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: '1rem 2rem',
-      borderBottom: '1px solid #eee',
-      background: `linear-gradient(90deg, #ffecd2 0%, #fcb69f 100%), url('/renk geçişi.jpg')`,
-      backgroundBlendMode: 'overlay',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
+      borderBottom: '1px solid #e0e0e0',
+      background: '#2c3e50',
+      color: '#fff'
     }}>
       <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
         <div style={{ fontWeight: 'bold', fontSize: '1.5rem', cursor: 'pointer' }}>ZELİŞLE GEZELİM</div>
       </Link>
+      
+      {/* Navigation Menu */}
+      <nav style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+        <Link href="/" style={{ textDecoration: 'none', color: '#fff', fontWeight: 500, fontSize: '1.1rem' }}>
+          Anasayfa
+        </Link>
+        <Link href="/blog" style={{ textDecoration: 'none', color: '#fff', fontWeight: 500, fontSize: '1.1rem' }}>
+          Blog
+        </Link>
+        <Link href="/iletisim" style={{ textDecoration: 'none', color: '#fff', fontWeight: 500, fontSize: '1.1rem' }}>
+          İletişim
+        </Link>
+      </nav>
+      
       <div>
         {!user ? (
           <>
-            <Link href="/login"><button style={{ marginRight: '1rem', background: 'linear-gradient(90deg, #ffecd2 0%, #fcb69f 100%)', border: 'none', padding: '8px 16px', borderRadius: 8, color: '#222', fontWeight: 600, cursor: 'pointer' }}>Giriş Yap</button></Link>
-            <Link href="/register"><button style={{ background: 'linear-gradient(90deg, #a1c4fd 0%, #c2e9fb 100%)', border: 'none', padding: '8px 16px', borderRadius: 8, color: '#222', fontWeight: 600, cursor: 'pointer' }}>Kayıt Ol</button></Link>
+            <Link href="/login"><button style={{ marginRight: '1rem', background: '#3498db', border: 'none', padding: '8px 16px', borderRadius: 8, color: '#fff', fontWeight: 600, cursor: 'pointer' }}>Giriş Yap</button></Link>
+            <Link href="/register"><button style={{ background: '#27ae60', border: 'none', padding: '8px 16px', borderRadius: 8, color: '#fff', fontWeight: 600, cursor: 'pointer' }}>Kayıt Ol</button></Link>
           </>
         ) : (
           <div style={{ position: 'relative', display: 'inline-block' }}>
-            <button onClick={() => setMenuOpen(v => !v)} style={{ background: 'linear-gradient(90deg, #fcb69f 0%, #ffecd2 100%)', border: 'none', padding: '8px 16px', borderRadius: 8, color: '#222', fontWeight: 600, cursor: 'pointer' }}>{user.name} ▼</button>
+            <button onClick={() => setMenuOpen(v => !v)} style={{ background: '#e74c3c', border: 'none', padding: '8px 16px', borderRadius: 8, color: '#fff', fontWeight: 600, cursor: 'pointer' }}>{user.name} ▼</button>
             {menuOpen && (
               <div style={{ position: 'absolute', right: 0, top: '110%', background: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', borderRadius: 8, minWidth: 160, zIndex: 10 }}>
-                <Link href="/profile"><div style={{ padding: '10px 16px', cursor: 'pointer' }}>Profil</div></Link>
-                {user.role === 'ADMIN' && <Link href="/admin"><div style={{ padding: '10px 16px', cursor: 'pointer' }}>Admin Panel</div></Link>}
+                <Link href="/profile"><div style={{ padding: '10px 16px', cursor: 'pointer', color: '#333' }}>Profil</div></Link>
+                {user.role === 'ADMIN' && <Link href="/admin"><div style={{ padding: '10px 16px', cursor: 'pointer', color: '#333' }}>Admin Panel</div></Link>}
                 <div style={{ padding: '10px 16px', cursor: 'pointer', color: 'red' }} onClick={logout}>Çıkış Yap</div>
               </div>
             )}
           </div>
+        )}
+        {user && (
+          <Link href="/create"><button style={{ marginRight: '1rem', background: '#f39c12', border: 'none', padding: '8px 16px', borderRadius: 8, color: '#fff', fontWeight: 600, cursor: 'pointer' }}>Blog Oluştur</button></Link>
         )}
       </div>
     </header>
