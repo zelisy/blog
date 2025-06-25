@@ -26,7 +26,9 @@ const Header = () => {
       backgroundSize: 'cover',
       backgroundPosition: 'center',
     }}>
-      <div style={{ fontWeight: 'bold', fontSize: '1.5rem' }}>ZELİŞLE GEZELİM</div>
+      <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <div style={{ fontWeight: 'bold', fontSize: '1.5rem', cursor: 'pointer' }}>ZELİŞLE GEZELİM</div>
+      </Link>
       <div>
         {!user ? (
           <>

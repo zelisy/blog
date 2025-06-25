@@ -26,12 +26,12 @@ const Login = ({ login }: { login: (user: any) => void }) => {
   };
 
   return (
-    <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #fcb69f 0%, #a1c4fd 100%)' }}>
+    <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>
       <div style={{ background: 'rgba(255,255,255,0.95)', borderRadius: 24, boxShadow: '0 8px 32px rgba(0,0,0,0.12)', padding: '2.5rem 2rem', maxWidth: 400, width: '100%' }}>
         <h2 style={{ textAlign: 'center', marginBottom: 24, fontWeight: 700, fontSize: 28, color: '#f76b1c', letterSpacing: 1 }}>Giriş Yap</h2>
         <form onSubmit={handleSubmit}>
-          <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required style={{ width: '100%', marginBottom: 16, padding: '12px', borderRadius: 8, border: '1px solid #eee', fontSize: 16 }} />
-          <input type="password" placeholder="Şifre" value={password} onChange={e => setPassword(e.target.value)} required style={{ width: '100%', marginBottom: 16, padding: '12px', borderRadius: 8, border: '1px solid #eee', fontSize: 16 }} />
+          <input type="email" placeholder="E-posta adresinizi girin" value={email} onChange={e => setEmail(e.target.value)} required style={{ width: '100%', marginBottom: 16, padding: '12px', borderRadius: 8, border: '1px solid #eee', fontSize: 16, '::placeholder': { color: '#888', opacity: 1 } }} />
+          <input type="password" placeholder="Şifrenizi girin" value={password} onChange={e => setPassword(e.target.value)} required style={{ width: '100%', marginBottom: 16, padding: '12px', borderRadius: 8, border: '1px solid #eee', fontSize: 16, '::placeholder': { color: '#888', opacity: 1 } }} />
           <button type="submit" style={{ width: '100%', padding: '12px', borderRadius: 8, background: 'linear-gradient(90deg, #fcb69f 0%, #a1c4fd 100%)', color: '#fff', fontWeight: 700, fontSize: 18, border: 'none', cursor: 'pointer', boxShadow: '0 2px 8px rgba(252,182,159,0.2)' }}>Giriş Yap</button>
         </form>
         {error && <div style={{ color: '#e74c3c', marginTop: 16, textAlign: 'center', fontWeight: 600 }}>{error}</div>}
