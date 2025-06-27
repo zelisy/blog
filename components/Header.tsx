@@ -25,7 +25,10 @@ const Header = () => {
       color: '#fff'
     }}>
       <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-        <div style={{ fontWeight: 'bold', fontSize: '1.5rem', cursor: 'pointer' }}>ZELİŞLE GEZELİM</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', fontWeight: 'bold', fontSize: '1.5rem', cursor: 'pointer' }}>
+          <img src="/logo.png" alt="Logo" style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }} />
+          Zeliş'le Rotalar
+        </div>
       </Link>
       
       {/* Navigation Menu */}
@@ -34,7 +37,7 @@ const Header = () => {
           Anasayfa
         </Link>
         <Link href="/blog" style={{ textDecoration: 'none', color: '#fff', fontWeight: 500, fontSize: '1.1rem' }}>
-          Blog
+          Blog Yazıları
         </Link>
         <Link href="/iletisim" style={{ textDecoration: 'none', color: '#fff', fontWeight: 500, fontSize: '1.1rem' }}>
           İletişim

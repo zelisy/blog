@@ -55,6 +55,8 @@ model Blog {
   author    User     @relation(fields: [authorId], references: [id])
   authorId  Int
   createdAt DateTime @default(now())
+  isApproved Boolean @default(false)
+  views     Int      @default(0)
 }
 
 enum Role {

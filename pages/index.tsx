@@ -7,32 +7,44 @@ interface Blog {
   title: string;
   content: string;
   featured: boolean;
+  views?: number;
 }
 
 export default function Home() {
   const [featured, setFeatured] = useState<Blog[]>([]);
-  const [all, setAll] = useState<Blog[]>([]);
+  const [mostViewed, setMostViewed] = useState<Blog[]>([]);
+  const [selectedBlog, setSelectedBlog] = useState<Blog | null>(null);
 
   useEffect(() => {
     fetch('/api/blogs?featured=1').then(r => r.json()).then(setFeatured);
-    fetch('/api/blogs').then(r => r.json()).then(setAll);
+    fetch('/api/blogs?mostViewed=1').then(r => r.json()).then(setMostViewed);
   }, []);
 
   return (
     <main style={{ minHeight: '100vh', background: '#fafafa', padding: '2rem 0' }}>
-      {/* Hoşgeldiniz Yazısı */}
-      <div style={{ 
-        textAlign: 'center', 
-        fontSize: '2.5rem', 
-        fontWeight: 700, 
-        marginBottom: '2rem', 
-        color: '#fff',
-        background: '#34495e',
-        padding: '1rem',
-        borderRadius: '8px',
-        margin: '0 2rem 2rem 2rem'
+      {/* Büyük Başlık ve Açıklama */}
+      <div style={{
+        textAlign: 'center',
+        marginBottom: '2.5rem',
       }}>
-        Hoşgeldiniz
+        <div style={{
+          fontSize: '2.8rem',
+          fontWeight: 800,
+          color: '#222',
+          marginBottom: '1.2rem',
+          letterSpacing: '-1px',
+        }}>
+          Zeliş'le Rotalar: Yeni yerler, yeni hikâyeler…
+        </div>
+        <div style={{
+          fontSize: '1.25rem',
+          color: '#555',
+          maxWidth: 600,
+          margin: '0 auto',
+          lineHeight: 1.6
+        }}>
+          Dünyayı gezenlerin notları burada birleşiyor. Sen de keşfettiklerini paylaş!
+        </div>
       </div>
 
       {/* Gezi Resmi */}
@@ -69,7 +81,7 @@ export default function Home() {
           color: '#333',
           textAlign: 'center'
         }}>
-          Blog Yazılarımız
+          En Çok Ziyaret Edilen Yolculuklar
         </h2>
         
         <div style={{ 
@@ -78,7 +90,7 @@ export default function Home() {
           gap: '2rem',
           padding: '0 1rem'
         }}>
-          {all.length === 0 && (
+          {mostViewed.length === 0 && (
             <div style={{ 
               textAlign: 'center', 
               gridColumn: '1 / -1',
@@ -89,7 +101,7 @@ export default function Home() {
             </div>
           )}
           
-          {all.map(blog => (
+          {mostViewed.map(blog => (
             <div key={blog.id} style={{ 
               background: '#fff', 
               borderRadius: '12px', 
@@ -124,28 +136,82 @@ export default function Home() {
               }}>
                 {blog.content.slice(0, 150)}...
               </p>
-              <Link href={`/blog/${blog.id}`} style={{ 
-                color: '#3498db', 
-                fontWeight: 600,
-                textDecoration: 'none',
-                fontSize: '0.9rem',
-                display: 'inline-block',
-                padding: '0.5rem 0',
-                borderBottom: '2px solid transparent',
-                transition: 'border-color 0.2s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderBottomColor = '#3498db';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderBottomColor = 'transparent';
-              }}>
+              <div style={{ color: '#f39c12', fontWeight: 600, marginBottom: 8 }}>Okunma: {blog.views || 0}</div>
+              <button
+                onClick={() => setSelectedBlog(blog)}
+                style={{
+                  background: '#fcb69f',
+                  color: '#fff',
+                  fontWeight: 600,
+                  border: 'none',
+                  borderRadius: 8,
+                  padding: '8px 18px',
+                  fontSize: '0.95rem',
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                  transition: 'background 0.2s',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.background = '#f39c12')}
+                onMouseLeave={e => (e.currentTarget.style.background = '#fcb69f')}
+              >
                 Devamını Oku →
-              </Link>
+              </button>
             </div>
           ))}
         </div>
       </section>
+
+      {/* Blog Pop-up Modal */}
+      {selectedBlog && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          background: 'rgba(0,0,0,0.45)',
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        onClick={() => setSelectedBlog(null)}
+        >
+          <div
+            style={{
+              background: '#fff',
+              borderRadius: 12,
+              maxWidth: 600,
+              width: '90vw',
+              padding: '2rem',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+              position: 'relative',
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setSelectedBlog(null)}
+              style={{
+                position: 'absolute',
+                top: 16,
+                right: 16,
+                background: '#e74c3c',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 6,
+                padding: '6px 14px',
+                fontWeight: 700,
+                fontSize: 16,
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+              }}
+            >Kapat</button>
+            <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: 16, color: '#1565c0' }}>{selectedBlog.title}</h2>
+            <div style={{ color: '#888', fontSize: 14, marginBottom: 16 }}>Okunma: {selectedBlog.views || 0}</div>
+            <div style={{ color: '#333', fontSize: 17, lineHeight: 1.7 }}>{selectedBlog.content}</div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
