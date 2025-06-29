@@ -26,8 +26,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json(blogs);
   }
   if (req.method === 'POST') {
-    const { title, content, authorName, date } = req.body;
+    const { title, content, imageUrl, authorName, date, authorId } = req.body;
     if (!title || !content || !authorName || !date) return res.status(400).json({ message: 'Eksik bilgi' });
+    
     let user = await prisma.user.findFirst({ where: { name: authorName } });
     if (!user) {
       const random = Math.floor(Math.random() * 1000000);
@@ -39,8 +40,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       });
     }
+    
+    // Eğer authorId verilmişse, o kullanıcıyı kullan (admin kontrolü için)
+    if (authorId) {
+      const existingUser = await prisma.user.findUnique({ where: { id: parseInt(authorId) } });
+      if (existingUser) {
+        user = existingUser;
+      }
+    }
+    
+    // Admin kullanıcıların blog yazıları otomatik onaylanır
+    const isApproved = user.role === 'ADMIN';
+    
     const blog = await prisma.blog.create({
-      data: { title, content, authorId: user.id, createdAt: new Date(date) },
+      data: { 
+        title, 
+        content, 
+        imageUrl: imageUrl || null,
+        authorId: user.id, 
+        createdAt: new Date(date),
+        isApproved: isApproved
+      },
     });
     return res.status(201).json(blog);
   }

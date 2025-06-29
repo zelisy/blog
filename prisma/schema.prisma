@@ -52,12 +52,25 @@ model Blog {
   id        Int      @id @default(autoincrement())
   title     String
   content   String
+  imageUrl  String?
   featured  Boolean  @default(false)
   author    User     @relation(fields: [authorId], references: [id])
   authorId  Int
   createdAt DateTime @default(now())
   isApproved Boolean @default(false)
   views     Int      @default(0)
+  comments  Comment[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  authorName String
+  authorEmail String
+  createdAt DateTime @default(now())
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  blogId    Int
+  isApproved Boolean @default(true)
 }
 
 model ContactMessage {
