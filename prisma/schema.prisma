@@ -13,6 +13,7 @@ model User {
   email     String   @unique
   password  String
   role      Role     @default(USER)
+  createdAt DateTime @default(now())
   posts     Post[]
   messagesSent     Message[] @relation("SentMessages")
   messagesReceived Message[] @relation("ReceivedMessages")
@@ -57,6 +58,19 @@ model Blog {
   createdAt DateTime @default(now())
   isApproved Boolean @default(false)
   views     Int      @default(0)
+}
+
+model ContactMessage {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  subject   String
+  message   String
+  createdAt DateTime @default(now())
+  isRead    Boolean  @default(false)
+  adminReply String?
+  repliedAt DateTime?
+  repliedBy String?
 }
 
 enum Role {

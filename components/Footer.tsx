@@ -4,7 +4,7 @@ import Link from 'next/link';
 const Footer = () => {
   return (
     <footer style={{
-      background: '#2c3e50',
+      background: 'linear-gradient(135deg,rgb(78, 80, 184) 0%,rgba(39, 44, 135, 0.86) 100%)',
       color: '#fff',
       padding: '0.7rem 1.2rem',
       marginTop: 'auto'
@@ -39,9 +39,9 @@ const Footer = () => {
             alignItems: 'center',
             fontSize: '0.98rem'
           }}>
-            <span>📍 Örnek Mahallesi, İstanbul</span>
-            <span>📧 info@zelislegezelim.com</span>
-            <span>📞 +90 (212) 123 45 67</span>
+            <span>📍 Çankaya/ANKARA </span>
+            <span>📧 zelissyldrm0@gmail.com</span>
+            <span>📞 0546 625 9657</span>
           </div>
         </div>
       </div>

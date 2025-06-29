@@ -14,11 +14,27 @@ export default function Iletisim() {
     e.preventDefault();
     setLoading(true);
     
-    setTimeout(() => {
-      setSuccess(true);
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setSuccess(true);
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        const errorData = await response.json();
+        alert(errorData.error || 'Mesaj gönderilemedi');
+      }
+    } catch (error) {
+      alert('Bir hata oluştu');
+    } finally {
       setLoading(false);
-      setFormData({ name: '', email: '', subject: '', message: '' });
-    }, 1000);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

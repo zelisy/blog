@@ -13,7 +13,7 @@ async function main() {
     create: {
       name: 'Normal User',
       email: 'user@example.com',
-      password: 'user1234',
+      password: passwordUser,
       role: 'USER',
     },
   });
@@ -24,10 +24,43 @@ async function main() {
     create: {
       name: 'Admin User',
       email: 'admin@example.com',
-      password: 'admin1234',
+      password: passwordAdmin,
       role: 'ADMIN',
     },
   });
+
+  // Test mesajları oluştur
+  await prisma.contactMessage.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      name: 'Test Kullanıcı',
+      email: 'user@example.com',
+      subject: 'Test Mesajı 1',
+      message: 'Bu bir test mesajıdır.',
+      isRead: true,
+      adminReply: 'Bu bir test admin yanıtıdır.',
+      repliedAt: new Date(),
+      repliedBy: 'Admin'
+    },
+  });
+
+  await prisma.contactMessage.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      name: 'Test Kullanıcı',
+      email: 'user@example.com',
+      subject: 'Test Mesajı 2',
+      message: 'Bu ikinci test mesajıdır.',
+      isRead: false
+    },
+  });
+
+  console.log('Seed tamamlandı!');
+  console.log('Normal kullanıcı: user@example.com / user1234');
+  console.log('Admin kullanıcı: admin@example.com / admin1234');
+  console.log('Test mesajları oluşturuldu!');
 }
 
 main()
