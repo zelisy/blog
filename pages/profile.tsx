@@ -9,30 +9,14 @@ interface User {
   createdAt: string;
 }
 
-interface ContactMessage {
-  id: number;
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-  createdAt: string;
-  isRead: boolean;
-  adminReply?: string;
-  repliedAt?: string;
-  repliedBy?: string;
-}
-
 export default function Profile() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     name: '',
     email: ''
   });
-  const [messages, setMessages] = useState<ContactMessage[]>([]);
-  const [messagesLoading, setMessagesLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -45,9 +29,6 @@ export default function Profile() {
         name: userInfo.name,
         email: userInfo.email
       });
-      
-      // Kullanıcının mesajlarını getir
-      fetchUserMessages(userInfo.email);
     } else {
       // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
       router.push('/login');
@@ -55,37 +36,6 @@ export default function Profile() {
     }
     setLoading(false);
   }, [router]);
-
-  const fetchUserMessages = async (email: string) => {
-    setMessagesLoading(true);
-    try {
-      const normalizedEmail = email.toLowerCase().trim();
-      console.log('Mesajlar getiriliyor, e-posta (normalized):', normalizedEmail);
-      const response = await fetch(`/api/contact?email=${encodeURIComponent(normalizedEmail)}`);
-      console.log('API response status:', response.status);
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Gelen mesajlar:', data);
-        console.log('Mesaj detayları:', data.map((msg: any) => ({
-          id: msg.id,
-          subject: msg.subject,
-          adminReply: msg.adminReply,
-          repliedBy: msg.repliedBy,
-          repliedAt: msg.repliedAt
-        })));
-        setMessages(data);
-      } else {
-        console.error('API hatası:', response.status, response.statusText);
-        const errorData = await response.json();
-        console.error('Hata detayı:', errorData);
-      }
-    } catch (error) {
-      console.error('Mesajlar yüklenirken hata:', error);
-    } finally {
-      setMessagesLoading(false);
-    }
-  };
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -115,7 +65,7 @@ export default function Profile() {
         const errorData = await response.json();
         alert(errorData.error || 'Güncelleme başarısız!');
       }
-    } catch (error) {
+    } catch (_error) {
       alert('Bir hata oluştu!');
     }
   };
@@ -430,150 +380,6 @@ export default function Profile() {
             </ul>
           </div>
         )}
-
-        {/* Kullanıcının Mesajları */}
-        <div style={{ 
-          marginTop: 32, 
-          padding: 24, 
-          background: '#f8f9fa', 
-          borderRadius: 8,
-          border: '1px solid #e9ecef'
-        }}>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            marginBottom: 20
-          }}>
-            <h3 style={{ 
-              color: '#495057', 
-              margin: 0,
-              fontSize: '1.3rem',
-              fontWeight: 600
-            }}>
-              İletişim Mesajlarım
-            </h3>
-            <button
-              onClick={() => fetchUserMessages(user.email)}
-              disabled={messagesLoading}
-              style={{
-                background: '#007bff',
-                color: '#fff',
-                border: 'none',
-                borderRadius: 6,
-                padding: '8px 16px',
-                fontSize: '0.9rem',
-                fontWeight: 600,
-                cursor: messagesLoading ? 'not-allowed' : 'pointer',
-                opacity: messagesLoading ? 0.6 : 1,
-                transition: 'background 0.3s'
-              }}
-            >
-              {messagesLoading ? 'Yükleniyor...' : 'Mesajları Yenile'}
-            </button>
-          </div>
-          
-          {/* Debug Bilgileri */}
-          <div style={{ 
-            marginBottom: 16, 
-            padding: 12, 
-            background: '#f8f9fa', 
-            border: '1px solid #dee2e6',
-            borderRadius: 6,
-            fontSize: '0.85rem',
-            color: '#6c757d'
-          }}>
-            <strong>Debug:</strong> Kullanıcı e-postası: {user.email} | Mesaj sayısı: {messages.length}
-          </div>
-          
-          {messagesLoading ? (
-            <div style={{ textAlign: 'center', color: '#6c757d' }}>Mesajlar yükleniyor...</div>
-          ) : messages.length === 0 ? (
-            <div style={{ textAlign: 'center', color: '#6c757d' }}>
-              Henüz iletişim mesajı göndermediniz.
-            </div>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              {messages.map(message => (
-                <div key={message.id} style={{ 
-                  background: '#fff', 
-                  padding: 16, 
-                  borderRadius: 8,
-                  border: '1px solid #dee2e6',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-                }}>
-                  <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between', 
-                    alignItems: 'center',
-                    marginBottom: 12
-                  }}>
-                    <h4 style={{ 
-                      margin: 0, 
-                      color: '#495057', 
-                      fontWeight: 600,
-                      fontSize: '1.1rem'
-                    }}>
-                      {message.subject}
-                    </h4>
-                    <span style={{ 
-                      fontSize: '0.8rem', 
-                      color: '#6c757d'
-                    }}>
-                      {new Date(message.createdAt).toLocaleDateString('tr-TR')}
-                    </span>
-                  </div>
-                  
-                  <div style={{ 
-                    color: '#495057', 
-                    lineHeight: '1.6',
-                    marginBottom: 12,
-                    whiteSpace: 'pre-wrap'
-                  }}>
-                    {message.message}
-                  </div>
-
-                  {/* Admin Yanıtı */}
-                  {message.adminReply && (
-                    <div style={{ 
-                      marginTop: 12, 
-                      padding: 12, 
-                      background: '#e3f2fd', 
-                      borderRadius: 6,
-                      border: '1px solid #bbdefb'
-                    }}>
-                      <div style={{ 
-                        fontSize: '0.9rem', 
-                        fontWeight: 600, 
-                        color: '#1976d2',
-                        marginBottom: 8
-                      }}>
-                        Admin Yanıtı ({message.repliedBy}) - {message.repliedAt && new Date(message.repliedAt).toLocaleDateString('tr-TR')}
-                      </div>
-                      <div style={{ 
-                        color: '#1565c0', 
-                        lineHeight: '1.6',
-                        whiteSpace: 'pre-wrap'
-                      }}>
-                        {message.adminReply}
-                      </div>
-                    </div>
-                  )}
-
-                  <div style={{ 
-                    fontSize: '0.8rem', 
-                    color: message.isRead ? '#28a745' : '#ffc107',
-                    fontWeight: 600,
-                    marginTop: 8
-                  }}>
-                    {message.isRead ? '✓ Okundu' : '● Okunmadı'}
-                    {message.adminReply && ' | ✓ Yanıtlandı'}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );
