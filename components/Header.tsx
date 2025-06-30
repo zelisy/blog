@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 // Kullanıcı prop'u ekliyoruz (ileride context ile değiştirilecek)
 interface User {
+  id: number;
   name: string;
   role: 'USER' | 'ADMIN';
 }
@@ -27,7 +28,7 @@ const Header = () => {
       <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', fontWeight: 'bold', fontSize: '1.5rem', cursor: 'pointer' }}>
           <img src="/logo.png" alt="Logo" style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }} />
-          Zeliş'le Rotalar
+          Zeliş&apos;le Rotalar
         </div>
       </Link>
       
@@ -42,6 +43,14 @@ const Header = () => {
         <Link href="/iletisim" style={{ textDecoration: 'none', color: '#fff', fontWeight: 500, fontSize: '1.1rem' }}>
           İletişim
         </Link>
+        {user && (
+          <Link href="/messages" style={{ textDecoration: 'none', color: '#fff', fontWeight: 500, fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+            </svg>
+            Mesajlar
+          </Link>
+        )}
       </nav>
       
       <div>
@@ -63,7 +72,7 @@ const Header = () => {
           </div>
         )}
         {user && (
-          <Link href="/create"><button style={{ marginRight: '1rem', background: '#f5576c', border: 'none', padding: '8px 16px', borderRadius: 8, color: '#fff', fontWeight: 600, cursor: 'pointer' }}>Blog Oluştur</button></Link>
+          <Link href="/create"><button style={{ marginLeft: '1rem', background: '#f5576c', border: 'none', padding: '8px 16px', borderRadius: 8, color: '#fff', fontWeight: 600, cursor: 'pointer' }}>Blog Oluştur</button></Link>
         )}
       </div>
     </header>

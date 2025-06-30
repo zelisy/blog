@@ -17,6 +17,7 @@ const Footer = () => {
         alignItems: 'center'
       }}>
         
+        
         {/* İletişim Bilgileri */}
         <div>
           <h4 style={{ 
