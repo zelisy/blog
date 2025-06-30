@@ -186,6 +186,16 @@ export default function AdminPanel() {
     fetchMessages();
   };
 
+  // İletişim mesajı silme fonksiyonu
+  const handleMessageDelete = async (id: number) => {
+    if (confirm('Bu mesajı silmek istediğinize emin misiniz?')) {
+      await fetch(`/api/contact?id=${id}`, {
+        method: 'DELETE',
+      });
+      fetchMessages();
+    }
+  };
+
   if (loading) return <div style={{ padding: 40, textAlign: 'center' }}>Yükleniyor...</div>;
   if (error) return <div style={{ padding: 40, textAlign: 'center', color: 'red' }}>{error}</div>;
 
@@ -355,6 +365,23 @@ export default function AdminPanel() {
                   }}>
                     {message.message}
                   </div>
+                  {/* Sil butonu */}
+                  <button 
+                    onClick={() => handleMessageDelete(message.id)}
+                    style={{ 
+                      background: '#dc3545', 
+                      color: '#fff', 
+                      border: 'none', 
+                      borderRadius: 6, 
+                      padding: '6px 12px', 
+                      fontWeight: 600, 
+                      cursor: 'pointer',
+                      fontSize: '0.8rem',
+                      marginBottom: 8
+                    }}
+                  >
+                    Sil
+                  </button>
                   
                   {/* Admin Yanıtı */}
                   {message.adminReply && (

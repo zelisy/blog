@@ -52,7 +52,7 @@ const Footer = () => {
         fontSize: '0.85rem',
         lineHeight: 1.5
       }}>
-        <div>© 2024 ZELİŞLE GEZELİM. Tüm hakları saklıdır.</div>
+        <div>© 2024 ZELİŞ'LE ROTALAR. Tüm hakları saklıdır.</div>
         <div>Gizlilik Politikası: Kişisel bilgileriniz gizli tutulur ve üçüncü kişilerle paylaşılmaz.</div>
       </div>
     </footer>

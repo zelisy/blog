@@ -51,6 +51,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(500).json({ error: 'Profil güncellenirken bir hata oluştu' });
     }
   } else if (req.method === 'GET') {
+    const { role } = req.query;
+    if (role === 'ADMIN') {
+      const admin = await prisma.user.findFirst({ where: { role: 'ADMIN' } });
+      if (!admin) return res.status(404).json({ error: 'Admin bulunamadı' });
+      return res.status(200).json({ id: admin.id, name: admin.name, email: admin.email, role: admin.role });
+    }
     try {
       const userId = req.query.userId as string;
 

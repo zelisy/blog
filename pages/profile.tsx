@@ -33,6 +33,8 @@ export default function Profile() {
   });
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [messagesLoading, setMessagesLoading] = useState(false);
+  const [adminMessages, setAdminMessages] = useState<any[]>([]);
+  const [adminMessagesLoading, setAdminMessagesLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -48,6 +50,8 @@ export default function Profile() {
       
       // Kullanıcının mesajlarını getir
       fetchUserMessages(userInfo.email);
+      // Admin ile olan mesajları getir
+      fetchAdminMessages(userInfo.id);
     } else {
       // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
       router.push('/login');
@@ -84,6 +88,27 @@ export default function Profile() {
       console.error('Mesajlar yüklenirken hata:', error);
     } finally {
       setMessagesLoading(false);
+    }
+  };
+
+  const fetchAdminMessages = async (userId: number) => {
+    setAdminMessagesLoading(true);
+    try {
+      // Admin id'sini bul
+      const adminRes = await fetch('/api/profile?role=ADMIN');
+      if (!adminRes.ok) return;
+      const admin = await adminRes.json();
+      if (!admin || !admin.id) return;
+      // Mesajları çek
+      const res = await fetch(`/api/messages?userId=${userId}&otherId=${admin.id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setAdminMessages(data);
+      }
+    } catch (e) {
+      // hata
+    } finally {
+      setAdminMessagesLoading(false);
     }
   };
 
@@ -574,6 +599,24 @@ export default function Profile() {
             </div>
           )}
         </div>
+
+        {/* Kullanıcıya gelen admin mesajları */}
+        {adminMessagesLoading ? (
+          <div style={{ marginTop: 32, color: '#666', textAlign: 'center' }}>Admin mesajları yükleniyor...</div>
+        ) : adminMessages.length > 0 ? (
+          <div style={{ marginTop: 32 }}>
+            <h3 style={{ color: '#1976d2', marginBottom: 12 }}>Admin Yanıtları / Mesajlaşma</h3>
+            <div style={{ background: '#f8f9fa', borderRadius: 8, padding: 16, border: '1px solid #e0e0e0' }}>
+              {adminMessages.map(msg => (
+                <div key={msg.id} style={{ marginBottom: 16, paddingBottom: 12, borderBottom: '1px solid #eee' }}>
+                  <div style={{ color: '#333', fontWeight: 600 }}>{msg.sender.role === 'ADMIN' ? 'Admin' : 'Siz'}:</div>
+                  <div style={{ color: '#444', margin: '6px 0 4px 0', whiteSpace: 'pre-wrap' }}>{msg.content}</div>
+                  <div style={{ fontSize: '0.85rem', color: '#888' }}>{new Date(msg.createdAt).toLocaleString('tr-TR')}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );

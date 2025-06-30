@@ -91,6 +91,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       });
 
+      // Eğer admin yanıtı varsa, ayrıca Message tablosuna da ekle
+      if (adminReply && repliedBy) {
+        // Kullanıcıyı email ile bul
+        const user = await prisma.user.findUnique({ where: { email: updatedMessage.email.toLowerCase() } });
+        // Admini bul
+        const admin = await prisma.user.findFirst({ where: { role: 'ADMIN' } });
+        if (user && admin) {
+          await prisma.message.create({
+            data: {
+              senderId: admin.id,
+              receiverId: user.id,
+              content: adminReply,
+            }
+          });
+        }
+      }
+
       console.log('Updated message:', updatedMessage);
       res.status(200).json(updatedMessage);
     } catch (error) {
