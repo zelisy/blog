@@ -62,8 +62,8 @@ export default function Iletisim() {
                 Adres
               </h3>
               <p style={{ color: '#666', lineHeight: '1.6' }}>
-                Örnek Mahallesi, Örnek Sokak No:123<br />
-                İstanbul, Türkiye
+                Birlik Mah. 1000 Sokak No:123<br />
+                Çankaya/ANKARA
               </p>
             </div>
 
@@ -72,7 +72,7 @@ export default function Iletisim() {
                 E-posta
               </h3>
               <p style={{ color: '#666', lineHeight: '1.6' }}>
-                info@zelislegezelim.com
+                zelissyldrm0@gmail.com
               </p>
             </div>
 
@@ -81,7 +81,7 @@ export default function Iletisim() {
                 Telefon
               </h3>
               <p style={{ color: '#666', lineHeight: '1.6' }}>
-                +90 (212) 123 45 67
+                +90 (546) 625 96 57
               </p>
             </div>
           </div>

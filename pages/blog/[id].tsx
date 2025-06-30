@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import Header, { AuthContext } from '@/components/Header';
 
 interface Blog {
   id: number;
@@ -33,6 +34,7 @@ export default function BlogDetailPage() {
     content: ''
   });
   const [submitting, setSubmitting] = useState(false);
+  const { user } = React.useContext(AuthContext);
 
   useEffect(() => {
     if (id) {
@@ -98,6 +100,26 @@ export default function BlogDetailPage() {
       alert('Yorum gönderilirken bir hata oluştu.');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm('Bu blog yazısını silmek istediğinize emin misiniz?')) return;
+    try {
+      const response = await fetch(`/api/blogs/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'x-user-role': user?.role || '',
+        },
+      });
+      if (response.ok) {
+        alert('Blog başarıyla silindi.');
+        router.push('/blog');
+      } else {
+        alert('Blog silinirken bir hata oluştu.');
+      }
+    } catch (error) {
+      alert('Blog silinirken bir hata oluştu.');
     }
   };
 
@@ -200,6 +222,27 @@ export default function BlogDetailPage() {
           }}>
             {blog.content}
           </div>
+
+          {/* Sadece adminler için sil butonu */}
+          {user && user.role === 'ADMIN' && (
+            <button
+              onClick={handleDelete}
+              style={{
+                marginTop: 32,
+                background: '#e74c3c',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 6,
+                padding: '10px 24px',
+                fontWeight: 700,
+                fontSize: '1rem',
+                cursor: 'pointer',
+                display: 'block',
+              }}
+            >
+              Blogu Sil
+            </button>
+          )}
         </article>
 
         {/* Yorumlar Bölümü */}
