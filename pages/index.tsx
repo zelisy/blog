@@ -322,6 +322,7 @@ export default function Home() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          padding: '20px'
         }}
         onClick={() => setSelectedBlog(null)}
         >
@@ -329,34 +330,77 @@ export default function Home() {
             style={{
               background: '#fff',
               borderRadius: 12,
-              maxWidth: 600,
+              maxWidth: 800,
               width: '90vw',
-              padding: '2rem',
+              maxHeight: '90vh',
+              display: 'flex',
+              flexDirection: 'column',
               boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
               position: 'relative',
             }}
             onClick={e => e.stopPropagation()}
           >
-            <button
-              onClick={() => setSelectedBlog(null)}
-              style={{
-                position: 'absolute',
-                top: 16,
-                right: 16,
-                background: '#e74c3c',
-                color: '#fff',
-                border: 'none',
-                borderRadius: 6,
-                padding: '6px 14px',
-                fontWeight: 700,
-                fontSize: 16,
-                cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
-              }}
-            >Kapat</button>
-            <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: 16, color: '#1565c0' }}>{selectedBlog.title}</h2>
-            <div style={{ color: '#888', fontSize: 14, marginBottom: 16 }}>Okunma: {selectedBlog.views || 0}</div>
-            <div style={{ color: '#333', fontSize: 17, lineHeight: 1.7 }}>{selectedBlog.content}</div>
+            {/* Modal Header */}
+            <div style={{
+              padding: '1.5rem 2rem 1rem 2rem',
+              borderBottom: '1px solid #e0e0e0',
+              flexShrink: 0
+            }}>
+              <button
+                onClick={() => setSelectedBlog(null)}
+                style={{
+                  position: 'absolute',
+                  top: 16,
+                  right: 16,
+                  background: '#e74c3c',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 6,
+                  padding: '6px 14px',
+                  fontWeight: 700,
+                  fontSize: 16,
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+                }}
+              >
+                ✕
+              </button>
+              <h2 style={{ 
+                fontSize: '1.8rem', 
+                fontWeight: 700, 
+                marginBottom: 8, 
+                color: '#1565c0',
+                paddingRight: '40px'
+              }}>
+                {selectedBlog.title}
+              </h2>
+              <div style={{ 
+                color: '#888', 
+                fontSize: 14,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}>
+                <span>👁️ Okunma: {selectedBlog.views || 0}</span>
+              </div>
+            </div>
+
+            {/* Modal Content - Scrollable */}
+            <div style={{
+              padding: '1rem 2rem 2rem 2rem',
+              overflowY: 'auto',
+              flex: 1,
+              maxHeight: 'calc(90vh - 120px)'
+            }}>
+              <div style={{ 
+                color: '#333', 
+                fontSize: 16, 
+                lineHeight: 1.8,
+                textAlign: 'justify'
+              }}>
+                {selectedBlog.content}
+              </div>
+            </div>
           </div>
         </div>
       )}
