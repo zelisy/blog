@@ -9,16 +9,7 @@ interface User {
   createdAt: string;
 }
 
-interface ContactMessage {
-  id: number;
-  subject: string;
-  message: string;
-  createdAt: string;
-  adminReply?: string;
-  repliedBy?: string;
-  repliedAt?: string;
-  isRead: boolean;
-}
+
 
 export default function Profile() {
   const [user, setUser] = useState<User | null>(null);
@@ -28,10 +19,7 @@ export default function Profile() {
     name: '',
     email: ''
   });
-  const [messages, setMessages] = useState<ContactMessage[]>([]);
-  const [messagesLoading, setMessagesLoading] = useState(false);
-  const [adminMessages, setAdminMessages] = useState<any[]>([]);
-  const [adminMessagesLoading, setAdminMessagesLoading] = useState(false);
+
 
   const router = useRouter();
 
@@ -39,13 +27,15 @@ export default function Profile() {
     const userData = localStorage.getItem('user');
     if (userData) {
       const userInfo = JSON.parse(userData);
+      if (userInfo.role === 'ADMIN') {
+        router.push('/admin/profile');
+        return;
+      }
       setUser(userInfo);
       setEditForm({
         name: userInfo.name,
         email: userInfo.email
       });
-      fetchUserMessages(userInfo.email);
-      fetchAdminMessages(userInfo.id);
     } else {
       router.push('/login');
       return;
@@ -53,40 +43,9 @@ export default function Profile() {
     setLoading(false);
   }, [router]);
 
-  const fetchUserMessages = async (email: string) => {
-    setMessagesLoading(true);
-    try {
-      const normalizedEmail = email.toLowerCase().trim();
-      const response = await fetch(`/api/contact?email=${encodeURIComponent(normalizedEmail)}`);
-      if (response.ok) {
-        const data = await response.json();
-        setMessages(data);
-      }
-    } catch (error) {
-      console.error('Mesajlar yüklenirken hata:', error);
-    } finally {
-      setMessagesLoading(false);
-    }
-  };
 
-  const fetchAdminMessages = async (userId: number) => {
-    setAdminMessagesLoading(true);
-    try {
-      const adminRes = await fetch('/api/profile?role=ADMIN');
-      if (!adminRes.ok) return;
-      const admin = await adminRes.json();
-      if (!admin || !admin.id) return;
-      const res = await fetch(`/api/messages?userId=${userId}&otherId=${admin.id}`);
-      if (res.ok) {
-        const data = await res.json();
-        setAdminMessages(data);
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setAdminMessagesLoading(false);
-    }
-  };
+
+
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -130,7 +89,18 @@ export default function Profile() {
   };
 
   if (loading) {
-    return <div>Yükleniyor...</div>;
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '60vh',
+        fontSize: '1.2rem',
+        color: '#666'
+      }}>
+        Yükleniyor...
+      </div>
+    );
   }
 
   if (!user) {
@@ -138,60 +108,171 @@ export default function Profile() {
   }
 
   return (
-    <div>
-      <h1>Profil</h1>
-      <p>Ad: {user.name}</p>
-      <p>Email: {user.email}</p>
-      <p>Rol: {user.role}</p>
-      {isEditing ? (
-        <>
-          <input
-            type="text"
-            value={editForm.name}
-            onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-          />
-          <input
-            type="email"
-            value={editForm.email}
-            onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-          />
-          <button onClick={handleSave}>Kaydet</button>
-          <button onClick={handleCancel}>İptal</button>
-        </>
-      ) : (
-        <button onClick={handleEdit}>Düzenle</button>
-      )}
+    <div style={{
+      maxWidth: '800px',
+      margin: '2rem auto',
+      padding: '0 1rem'
+    }}>
+      {/* Profil Başlığı */}
+      <div style={{
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        color: 'white',
+        padding: '2rem',
+        borderRadius: '12px',
+        marginBottom: '2rem',
+        boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+      }}>
+        <h1 style={{
+          margin: '0 0 1rem 0',
+          fontSize: '2rem',
+          fontWeight: 'bold'
+        }}>
+          Profil Bilgileri
+        </h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{
+            width: '60px',
+            height: '60px',
+            borderRadius: '50%',
+            background: 'rgba(255,255,255,0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '1.5rem',
+            fontWeight: 'bold'
+          }}>
+            {user.name.charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <p style={{ margin: '0.5rem 0', fontSize: '1.1rem' }}>
+              <strong>Ad:</strong> {user.name}
+            </p>
+            <p style={{ margin: '0.5rem 0', fontSize: '1.1rem' }}>
+              <strong>Email:</strong> {user.email}
+            </p>
+            <p style={{ margin: '0.5rem 0', fontSize: '1.1rem' }}>
+              <strong>Rol:</strong> {user.role === 'USER' ? 'Kullanıcı' : 'Admin'}
+            </p>
+          </div>
+        </div>
+      </div>
 
-      <h2>İletişim Mesajlarım</h2>
-      {messagesLoading ? (
-        <p>Mesajlar yükleniyor...</p>
-      ) : messages.length === 0 ? (
-        <p>Hiç mesaj yok.</p>
-      ) : (
-        <ul>
-          {messages.map(msg => (
-            <li key={msg.id}>
-              <strong>{msg.subject}</strong> - {msg.message}
-              {msg.adminReply && <p>Yanıt: {msg.adminReply}</p>}
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <h2>Admin Mesajları</h2>
-      {adminMessagesLoading ? (
-        <p>Yükleniyor...</p>
-      ) : adminMessages.length === 0 ? (
-        <p>Admin'den mesaj yok.</p>
-      ) : (
-        <ul>
-          {adminMessages.map(msg => (
-            <li key={msg.id}>
-              <p>{msg.sender.role === 'ADMIN' ? 'Admin' : 'Siz'}: {msg.content}</p>
-            </li>
-          ))}
-        </ul>
-      )}
+      {/* Düzenleme Bölümü */}
+      <div style={{
+        background: 'white',
+        padding: '2rem',
+        borderRadius: '12px',
+        marginBottom: '2rem',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+        border: '1px solid #e0e0e0'
+      }}>
+        <h2 style={{
+          margin: '0 0 1.5rem 0',
+          color: '#333',
+          fontSize: '1.5rem'
+        }}>
+          Profil Düzenle
+        </h2>
+        
+        {isEditing ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div>
+              <label style={{
+                display: 'block',
+                marginBottom: '0.5rem',
+                fontWeight: '600',
+                color: '#555'
+              }}>
+                Ad:
+              </label>
+              <input
+                type="text"
+                value={editForm.name}
+                onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '2px solid #e0e0e0',
+                  borderRadius: '8px',
+                  fontSize: '1rem',
+                  outline: 'none'
+                }}
+              />
+            </div>
+            <div>
+              <label style={{
+                display: 'block',
+                marginBottom: '0.5rem',
+                fontWeight: '600',
+                color: '#555'
+              }}>
+                Email:
+              </label>
+              <input
+                type="email"
+                value={editForm.email}
+                onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '2px solid #e0e0e0',
+                  borderRadius: '8px',
+                  fontSize: '1rem',
+                  outline: 'none'
+                }}
+              />
+            </div>
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+              <button 
+                onClick={handleSave}
+                style={{
+                  background: '#667eea',
+                  border: 'none',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '8px',
+                  color: 'white',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  fontSize: '1rem'
+                }}
+              >
+                Kaydet
+              </button>
+              <button 
+                onClick={handleCancel}
+                style={{
+                  background: '#6c757d',
+                  border: 'none',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '8px',
+                  color: 'white',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  fontSize: '1rem'
+                }}
+              >
+                İptal
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button 
+            onClick={handleEdit}
+            style={{
+              background: '#667eea',
+              border: 'none',
+              padding: '0.75rem 1.5rem',
+              borderRadius: '8px',
+              color: 'white',
+              fontWeight: '600',
+              cursor: 'pointer',
+              fontSize: '1rem'
+            }}
+          >
+            Düzenle
+          </button>
+        )}
+      </div>
     </div>
   );
 }

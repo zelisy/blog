@@ -277,7 +277,15 @@ export default function Home() {
                 </p>
                 <div style={{ color: '#f39c12', fontWeight: 600, marginBottom: 8 }}>Okunma: {blog.views || 0}</div>
                 <button
-                  onClick={() => setSelectedBlog(blog)}
+                  onClick={() => {
+                    setSelectedBlog(blog);
+                    setTimeout(() => {
+                      window.scrollTo({
+                        top: document.body.scrollHeight,
+                        behavior: 'smooth'
+                      });
+                    }, 100);
+                  }}
                   style={{
                     background: '#fcb69f',
                     color: '#fff',

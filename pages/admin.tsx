@@ -153,9 +153,143 @@ export default function AdminPanel() {
           <div style={{ padding: 40, textAlign: 'center', color: 'red' }}>{error}</div>
         ) : (
           activeTab === 'blogs' ? (
-            <div>Blog yönetim alanı</div>
+            <div>
+              {blogs.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: 40, color: '#666' }}>
+                  Onay bekleyen blog bulunmuyor.
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {blogs.map(blog => (
+                    <div key={blog.id} style={{
+                      border: '1px solid #e0e0e0',
+                      borderRadius: '8px',
+                      padding: '1.5rem',
+                      background: '#f8f9fa'
+                    }}>
+                      <h3 style={{ margin: '0 0 0.5rem 0', color: '#333' }}>{blog.title}</h3>
+                      <p style={{ margin: '0 0 1rem 0', color: '#666' }}>
+                        {blog.content.slice(0, 200)}...
+                      </p>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button
+                          onClick={() => handleApprove(blog.id)}
+                          style={{
+                            background: '#28a745',
+                            color: 'white',
+                            border: 'none',
+                            padding: '0.5rem 1rem',
+                            borderRadius: '4px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Onayla
+                        </button>
+                        <button
+                          onClick={() => handleReject(blog.id)}
+                          style={{
+                            background: '#dc3545',
+                            color: 'white',
+                            border: 'none',
+                            padding: '0.5rem 1rem',
+                            borderRadius: '4px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Reddet
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           ) : (
-            <div>Yorum yönetim alanı</div>
+            <div>
+              {comments.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: 40, color: '#666' }}>
+                  Henüz yorum bulunmuyor.
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {comments.map(comment => (
+                    <div key={comment.id} style={{
+                      border: '1px solid #e0e0e0',
+                      borderRadius: '8px',
+                      padding: '1.5rem',
+                      background: comment.isApproved ? '#f8f9fa' : '#fff3cd'
+                    }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
+                        <div>
+                          <strong style={{ color: '#333' }}>{comment.authorName}</strong>
+                          <span style={{ color: '#666', marginLeft: '0.5rem' }}>({comment.authorEmail})</span>
+                        </div>
+                        <span style={{
+                          background: comment.isApproved ? '#28a745' : '#ffc107',
+                          color: comment.isApproved ? 'white' : '#333',
+                          padding: '0.25rem 0.5rem',
+                          borderRadius: '4px',
+                          fontSize: '0.8rem'
+                        }}>
+                          {comment.isApproved ? 'Onaylı' : 'Onay Bekliyor'}
+                        </span>
+                      </div>
+                      <p style={{ margin: '0 0 0.5rem 0', color: '#333' }}>
+                        <strong>Blog:</strong> {comment.blog.title}
+                      </p>
+                      <p style={{ margin: '0 0 1rem 0', color: '#666', lineHeight: '1.6' }}>
+                        {comment.content}
+                      </p>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        {!comment.isApproved && (
+                          <button
+                            onClick={() => handleCommentApprove(comment.id, true)}
+                            style={{
+                              background: '#28a745',
+                              color: 'white',
+                              border: 'none',
+                              padding: '0.5rem 1rem',
+                              borderRadius: '4px',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            Onayla
+                          </button>
+                        )}
+                        {comment.isApproved && (
+                          <button
+                            onClick={() => handleCommentApprove(comment.id, false)}
+                            style={{
+                              background: '#ffc107',
+                              color: '#333',
+                              border: 'none',
+                              padding: '0.5rem 1rem',
+                              borderRadius: '4px',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            Onayı Kaldır
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleCommentDelete(comment.id)}
+                          style={{
+                            background: '#dc3545',
+                            color: 'white',
+                            border: 'none',
+                            padding: '0.5rem 1rem',
+                            borderRadius: '4px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Sil
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           )
         )}
       </div>
